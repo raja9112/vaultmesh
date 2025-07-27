@@ -22,8 +22,7 @@ Use the following format based on the purpose of the branch:
 ### ✅ Pull Request Rules
 
 - 🔒 **Do not push directly to `main`.** All changes must go through a pull request.
-- ✅ PRs must be created from a non-main branch.
-- ✅ Each PR must be linked to an issue (if applicable) using `Closes #issue_number`.
+- ✅ PRs must be created from a base branch.
 
 #### PR Title and Description Format
 
