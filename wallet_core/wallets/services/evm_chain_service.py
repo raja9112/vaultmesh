@@ -4,8 +4,12 @@ from .base import BaseWalletService
 class EVMWalletService(BaseWalletService):
     # todo: Use IPCProvider or WebSocketProvider for better performance in Production
     #       HTTPProvider is suitable for development and testing
-    def __init__(self, provider_url):
+    def __init__(self, chain, provider_url):
         self.web3 = Web3(Web3.HTTPProvider(provider_url))
+        if not self.web3.is_connected():
+            raise ConnectionError(f"Failed to connect to {chain} RPC at {provider_url}")
+        else:
+            print(f"Connected to {chain} RPC at {provider_url}")
 
     def create_wallet(self):
         acct = self.web3.eth.account.create()

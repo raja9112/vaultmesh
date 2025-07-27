@@ -38,23 +38,30 @@ class Wallet(TimeStampMixin):
             models.UniqueConstraint(fields=['wallet_address', 'chain'], name='unique_wallet_on_chain')
         ]
 
+    def __str__(self):
+        return f'Wallet Address: {self.wallet_address} - User: {self.user.username} - Type: {self.wallet_type} - Chain: {self.chain.name if self.chain else "N/A"}'
+
 
 class BlockchainNetwork(TimeStampMixin):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, unique=True)
     chain_symbol = models.CharField(max_length=20, unique=True)
-    network = models.CharField(max_length=20, null=True)
     chain_id = models.BigIntegerField(null=True)
+    network = models.CharField(max_length=20, null=True)
+    network_type = models.CharField(max_length=20, choices=[('mainnet', 'Mainnet'), ('testnet', 'Testnet')], default='mainnet')
 
     class Meta:
         db_table = 'blockchain_network'
         indexes = [
             models.Index(fields=['id', 'name']),
-            models.Index(fields=['chain_symbol'])
+            models.Index(fields=['chain_symbol', 'chain_id'])
         ]
         constraints = [
-            models.UniqueConstraint(fields=['name', 'chain_symbol'], name='unique_network_name_chain_symbol')
+            models.UniqueConstraint(fields=['name', 'chain_symbol', 'chain_id'], name='unique_network_name_chain_symbol')
         ]
+    
+    def __str__(self):
+        return f'{self.name} ({self.chain_symbol}) - ID: {self.chain_id}'
 
 
 class KeyPair(TimeStampMixin):
@@ -76,3 +83,6 @@ class KeyPair(TimeStampMixin):
         indexes = [
             models.Index(fields=['id', 'wallet'])
         ]
+
+    def __str__(self):
+        return f'Wallet Address: {self.wallet.wallet_address} - is Active: {self.is_active} - Key Format: {self.key_format}'
