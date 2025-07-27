@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import Wallet, KeyPair, BlockchainNetwork
 
-# Register your models here.
+admin.site.register(Wallet)
+admin.site.register(BlockchainNetwork)
+admin.site.register(KeyPair)
