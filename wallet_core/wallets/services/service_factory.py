@@ -4,11 +4,10 @@ from decouple import config
 
 class WalletServiceFactory:
     EVM_RPC_URLS = {
-        # "ETH": f'https://mainnet.infura.io/v3/{config("ETH_MAINNET_RPC_API")}',     For mainnet 
-        "ETH": f'https://sepolia.infura.io/v3/{config("ETH_RPC_API")}',     # For testnet
-        "BSC": f'https://rpc.ankr.com/bsc_testnet_chapel/{config("RPC_TESTNET_API")}',
-        "POLYGON": f'https://rpc.ankr.com/polygon_amoy/{config("RPC_TESTNET_API")}',
-        "AVALANCHE": f'https://rpc.ankr.com/avalanche_fuji-c/{config("RPC_TESTNET_API")}',
+        "ETH": config("ETHEREUM_TESTNET"),     # For testnet
+        "BSC": config("BSC_TESTNET"),
+        "POLYGON": config("POLYGON_TESTNET"),
+        "AVALANCHE": config("AVALANCHE_TESTNET"),
     }
 
     @staticmethod
