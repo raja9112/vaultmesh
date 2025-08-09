@@ -1,13 +1,35 @@
-from rest_framework_simplejwt.serializers import TokenVerifySerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from django.contrib.auth import authenticate
+from wallets.views.enums import StatusCode
+from wallets.views.utils import create_jwt
+from wallets.views.exceptions import GenericApiException, ExternalApiResponseWrapper
 
-class CustomTokenVerifyView(APIView):
+
+class LoginView(APIView):
     def post(self, request, *args, **kwargs):
-        serializer = TokenVerifySerializer(data=request.data)
         try:
-            serializer.is_valid(raise_exception=True)
-            return Response({"success": True, "detail": "Token is valid"}, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"success": False, "detail": "Token is not valid"}, status=status.HTTP_401_UNAUTHORIZED)
+            username = request.data.get("username", "")
+            password = request.data.get("password", "")
+            if not username or not password:
+                raise GenericApiException(
+                    success=False,
+                    code=StatusCode.MISSING_CREDENTIALS.value,
+                    data={"username": username, "password": password}
+                )
+            user = authenticate(username=username, password=password)
+            if user is None:
+                raise GenericApiException(
+                    success=False,
+                    code=StatusCode.USER_NOT_REGISTERED.value,
+                    data={"username": username, "password": password}
+                )
+            token = create_jwt(user.id)
+            response_wrapper = ExternalApiResponseWrapper(
+                success=True,
+                code=StatusCode.SUCCESS.value,
+                data={"token": token}
+            )
+            return Response(response_wrapper.__dict__)
+        except GenericApiException as exc:
+            return Response(exc.__dict__)
