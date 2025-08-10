@@ -14,6 +14,7 @@ class EVMWalletService(BaseWalletService):
     def create_wallet(self):
         acct = self.web3.eth.account.create()
         return {
+        "wallet_format": "EIP-55",
         "address": acct.address,
         "private_key_bytes": acct.key,  # For AES encryption (custodial)
         "private_key_hex": acct.key.hex(),  # For returning in non-custodial

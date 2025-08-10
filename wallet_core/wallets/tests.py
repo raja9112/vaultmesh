@@ -12,3 +12,4 @@ def get_web3_client(chain: str) -> Web3:
     return web3
 
 print(get_web3_client("ETH"))  
+

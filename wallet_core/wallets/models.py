@@ -21,6 +21,7 @@ class Wallet(TimeStampMixin):
     ]
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    wallet_name = models.CharField(max_length=255, null=True)
     wallet_address = models.CharField(max_length=255, unique=True)
     wallet_type = models.CharField(max_length=20, choices=WALLET_TYPE_CHOICES, default='custodial')
     storage_type = models.CharField(max_length=20, choices=STORAGE_TYPE_CHOICES, default='hot')
@@ -32,10 +33,10 @@ class Wallet(TimeStampMixin):
     class Meta:
         db_table = 'wallet'
         indexes = [
-            models.Index(fields=['id', 'wallet_address'])
+            models.Index(fields=['id', 'wallet_name', 'wallet_address'])
         ]
         constraints = [
-            models.UniqueConstraint(fields=['wallet_address', 'chain'], name='unique_wallet_on_chain')
+            models.UniqueConstraint(fields=['wallet_name', 'wallet_address', 'chain'], name='unique_wallet_on_chain')
         ]
 
     def __str__(self):
@@ -69,9 +70,7 @@ class KeyPair(TimeStampMixin):
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
     public_key = models.TextField()
     private_key = models.TextField(null=True)
-    key_format = models.CharField(max_length=20, default="base64")
-    encryption_iv = models.CharField(max_length=255, null=True)
-    encryption_algorithm = models.CharField(max_length=20, default="AES-256")
+    additional_data = models.JSONField(null=True)
     is_active = models.BooleanField(default=True)
     derivation_path = models.CharField(max_length=255, null=True)
 
@@ -85,4 +84,4 @@ class KeyPair(TimeStampMixin):
         ]
 
     def __str__(self):
-        return f'Wallet Address: {self.wallet.wallet_address} - is Active: {self.is_active} - Key Format: {self.key_format}'
+        return f'Wallet Address: {self.wallet.wallet_address} - is Active: {self.is_active}'
