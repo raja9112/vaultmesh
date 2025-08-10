@@ -15,3 +15,27 @@ class StatusCode(Enum):
 
     def __str__(self):
         return self.value
+
+
+class JwtErrorCode(Enum):
+    TOKEN_EXPIRED = 'TOKEN_EXPIRED'
+    INVALID_TOKEN = 'INVALID_TOKEN'
+
+    def __str__(self):
+        return self.value
+    
+
+class WalletType(Enum):
+    CUSTODIAL = 'custodial'
+    NON_CUSTODIAL = 'non_custodial'
+
+    def __str__(self):
+        return self.value
+
+
+class StorageType(Enum):
+    HOT = 'hot'
+    COLD = 'cold'
+
+    def __str__(self):
+        return self.value

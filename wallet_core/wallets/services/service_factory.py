@@ -1,5 +1,6 @@
 from .evm_chain_service import EVMWalletService
 from decouple import config
+from django.http import JsonResponse
 
 
 class WalletServiceFactory:
@@ -18,13 +19,13 @@ class WalletServiceFactory:
             raise NotImplementedError(f"RPC URL for {chain} not configured")
 
     @staticmethod
-    def get_service(chain : str) -> str:
+    def get_service(chain: str):
         chain = chain.upper()
         if chain in WalletServiceFactory.EVM_RPC_URLS:
             rpc_url = WalletServiceFactory.get_rpc_url(chain)
             return EVMWalletService(chain=chain, provider_url=rpc_url)
         else:
-            raise NotImplementedError(f"{chain} not supported")
+            return {"success": False, "error": f"Service for {chain} not implemented"}
         
 
 # if __name__ == "__main__":
